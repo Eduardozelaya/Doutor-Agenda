@@ -1,5 +1,5 @@
-import Image from "next/image";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import Image from "next/image";
 
 export default function Home() {
   const name = "";
