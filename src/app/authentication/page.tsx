@@ -1,10 +1,22 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import React from "react";
+
+import { auth } from "@/lib/auth";
 
 import LoginForm from "./components/login-form";
 import SignUpForm from "./components/sign-up-form";
 
-const AuthenticationPage = () => {
+const AuthenticationPage = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="flex h-screen items-center justify-center">
       <Tabs defaultValue="login" className="w-[400px]">
