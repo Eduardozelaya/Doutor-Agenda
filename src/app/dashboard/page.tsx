@@ -1,26 +1,37 @@
-"use client";
-
+import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { authClient } from "@/lib/auth-client";
+import { db } from "@/db";
+import { usersToClinicTable } from "@/db/schema";
+import { auth } from "@/lib/auth";
 
 import SignOutButton from "./components/sign-out-button";
 
-const DashboardPage = () => {
-  const session = authClient.useSession();
+const DashboardPage = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  // Corrigido: redirecionar para login se NÃO houver usuário logado
+  if (!session?.user) {
+    redirect("/authentication");
+  }
+
+  const clinic = await db.query.usersToClinicTable.findMany({
+    where: eq(usersToClinicTable.userId, session.user.id),
+  });
+
+  if (clinic.length === 0) {
+    redirect("/clinic-form");
+  }
 
   return (
     <div>
       <h1>Dashboard</h1>
-      {!session.data ? (
-        redirect("/authentication")
-      ) : (
-        <>
-          <h1>{session?.data?.user?.name}</h1>
-          <h1>{session?.data?.user?.email}</h1>
-          <SignOutButton />
-        </>
-      )}
+      <h1>{session.user.name}</h1>
+      <h1>{session.user.email}</h1>
+      <SignOutButton />
     </div>
   );
 };
