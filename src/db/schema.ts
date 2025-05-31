@@ -59,7 +59,7 @@ export const accountsTable = pgTable("accounts", {
   updatedAt: timestamp("updated_at").notNull(),
 });
 
-export const verificationsTable = pgTable("verifications", {
+export const verifications = pgTable("verifications", {
   id: text("id").primaryKey(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
