@@ -1,6 +1,8 @@
 "use client";
+
 import {
   CalendarDays,
+  Gem,
   LayoutDashboard,
   LogOut,
   Stethoscope,
@@ -8,9 +10,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,39 +36,43 @@ import { authClient } from "@/lib/auth-client";
 const items = [
   {
     title: "Dashboard",
-    url: "#/dashboard",
+    url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     title: "Agendamentos",
-    url: "#/appointments",
+    url: "/appointments",
     icon: CalendarDays,
   },
   {
     title: "Médicos",
-    url: "#/doctors",
+    url: "/doctors",
     icon: Stethoscope,
   },
   {
     title: "Pacientes",
-    url: "#/patients",
+    url: "/patients",
     icon: UsersRound,
   },
 ];
 
 export function AppSidebar() {
   const router = useRouter();
+  const session = authClient.useSession();
+  const pathname = usePathname();
+
   const handleSignOut = async () => {
     await authClient.signOut({
-      fetchOptions: {}, // Inclua se necessário
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/authentication");
+        },
+      },
     });
-
-    router.push("/authentication");
   };
-
   return (
     <Sidebar>
-      <SidebarHeader className="p-4">
+      <SidebarHeader className="border-b p-4">
         <Image src="/logo.svg" alt="Doutor Agenda" width={136} height={28} />
       </SidebarHeader>
       <SidebarContent>
@@ -76,7 +82,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -87,13 +93,43 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Outros</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/subscription"}
+                >
+                  <Link href="/subscription">
+                    <Gem />
+                    <span>Assinatura</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-4">
+      <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button>Clinica</Button>
+                <SidebarMenuButton size="lg">
+                  <Avatar>
+                    <AvatarFallback>F</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm">
+                      {session.data?.user?.clinic?.name}
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      {session.data?.user.email}
+                    </p>
+                  </div>
+                </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={handleSignOut}>
