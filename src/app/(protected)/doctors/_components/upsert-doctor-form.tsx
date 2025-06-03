@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect } from "react";
@@ -62,14 +63,13 @@ const formSchema = z
       return data.availableFromTime < data.availableToTime;
     },
     {
-      message:
-        "O horário de início não pode ser anterior ao horário de término.",
+      message: "O horário de início deve ser anterior ao horário de término.",
       path: ["availableToTime"],
     },
   );
 
 interface UpsertDoctorFormProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   doctor?: typeof doctorsTable.$inferSelect;
   onSuccess?: () => void;
 }
