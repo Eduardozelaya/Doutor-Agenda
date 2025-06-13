@@ -10,7 +10,7 @@ import {
   PageHeader,
   PageHeaderContent,
   PageTitle,
-} from "@/components/page-container";
+} from "@/components/ui/page-container";
 import { db } from "@/db";
 import { doctorsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -28,6 +28,9 @@ const DoctorsPage = async () => {
   }
   if (!session?.user.clinic) {
     redirect("/clinic-form");
+  }
+  if (!session.user.plan) {
+    redirect("/new-subscription");
   }
 
   const doctors = await db.query.doctorsTable.findMany({

@@ -15,8 +15,7 @@ import {
 import { UpsertPatientForm } from "./upsert-patient-form";
 
 export function AddPatientButton() {
-  const [isOpen, setIsOpen] = useState(false); // ✅ controla abertura do Dialog
-
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>

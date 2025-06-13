@@ -2,7 +2,7 @@
 
 import {
   CalendarDays,
-  Gem,
+  Diamond,
   LayoutDashboard,
   LogOut,
   Stethoscope,
@@ -103,7 +103,7 @@ export function AppSidebar() {
                   isActive={pathname === "/subscription"}
                 >
                   <Link href="/subscription">
-                    <Gem />
+                    <Diamond />
                     <span>Assinatura</span>
                   </Link>
                 </SidebarMenuButton>

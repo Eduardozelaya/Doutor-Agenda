@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/select";
 
 interface UpsertPatientFormProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   defaultValues?: Partial<UpsertPatientSchema>;
   onSuccess?: () => void;
 }
