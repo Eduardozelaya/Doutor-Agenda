@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect } from "react";
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
@@ -110,7 +111,8 @@ export function UpsertAppointmentForm({
   });
 
   // Função para limpar o formulário
-  const resetForm = () => {
+  // Função para limpar o formulário
+  const resetForm = useCallback(() => {
     form.reset({
       patientId: "",
       doctorId: "",
@@ -119,7 +121,7 @@ export function UpsertAppointmentForm({
       time: "",
       clinicId,
     });
-  };
+  }, [form, clinicId]);
 
   const { data: availableTimes = [] } = useQuery<TimeSlot[], Error, TimeSlot[]>(
     {
@@ -138,7 +140,6 @@ export function UpsertAppointmentForm({
     },
   );
 
-  // Reseta o formulário quando abrir novamente ou quando os dados mudarem
   useEffect(() => {
     if (!appointment) {
       resetForm();
@@ -152,7 +153,7 @@ export function UpsertAppointmentForm({
         clinicId,
       });
     }
-  }, [appointment, clinicId, form]);
+  }, [appointment, clinicId, form, resetForm]);
 
   // Atualiza o preço quando selecionar o médico
   useEffect(() => {

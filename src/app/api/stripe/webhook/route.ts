@@ -38,13 +38,16 @@ export const POST = async (request: Request) => {
   try {
     switch (event.type) {
       case "invoice.paid": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as Stripe.Invoice & {
+          subscription_details?: {
+            subscription?: string;
+          };
+        };
 
         let userId: string | undefined = undefined;
         let subscriptionId: string | undefined = undefined;
         const customerId = invoice.customer as string;
 
-        // ✅ NOVO PONTO: busca subscriptionId pela subscription_details
         if (invoice.subscription_details?.subscription) {
           subscriptionId = invoice.subscription_details.subscription;
           const subscription =
